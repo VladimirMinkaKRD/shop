@@ -4,18 +4,22 @@ from pony.orm import *
 
 db = Database()
 
+#
+# class Seller(db.Entity):
+#     id = PrimaryKey(int, auto=True)
+#     name = Required(str, 20)
+#     date_of_hire = Required(datetime)
+#     purchases = Set('Buy')
+#
+#
+# class Buyer(db.Entity):
+#     id = PrimaryKey(int, auto=True)
+#     name = Optional(str, 20)
+#     purchases = Set('Buy')
 
-class Seller(db.Entity):
-    id = PrimaryKey(int, auto=True)
-    name = Required(str, 20)
-    date_of_hire = Required(datetime)
-    purchases = Set('Buy')
 
-
-class Buyer(db.Entity):
-    id = PrimaryKey(int, auto=True)
-    name = Optional(str, 20)
-    purchases = Set('Buy')
+class User(db.Entity):#TODO доработать класс User и создать классы наследники Buyer и Seller со своим функционалом
+    id = PrimaryK
 
 
 class Good(db.Entity):

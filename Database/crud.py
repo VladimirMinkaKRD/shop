@@ -5,9 +5,8 @@ from Database.db import *
 import random
 
 
-class Visitor:
-    def __init__(self, name):
-        self.name = name
+class Repository: # TODO 1. Убрать инит метод, в каждый метод отдавать необх параметр(name), создавать только 1 раз
+
 
     @db_session
     def create_user(self):

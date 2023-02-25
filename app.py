@@ -1,15 +1,18 @@
 import fastapi
 import pydantic_models
 from Database import crud
+from Database.crud import Repository
 
 api = fastapi.FastAPI()
 
 
+visitor = Repository('Владимир')
+#TODO это служебный класс
 @api.post('/create_buyer')
 @crud.db_session
 def create_buyer(name: dict = fastapi.Body()):
     new_name = name['name']
-    return crud.Visitor(new_name).create_user()
+    return crud.Repository(new_name).create_user()
 
 
 @api.put('/buyer/{buyer_id}')
@@ -36,7 +39,7 @@ def delete_buyer(buyer_id: int = fastapi.Path()):
 @crud.db_session
 def create_buy(buyer_id: int = fastapi.Path(), buy: dict = fastapi.Body()):
     name = crud.get_buyer_by_id(buyer_id).name
-    buying = crud.Visitor(name).create_deal(buy)
+    buying = crud.Repository(name).create_deal(buy)
     return {
         'id': buying.id,
         'date_of_order': buying.date_of_order,
@@ -61,7 +64,7 @@ def get_all_buyers():
 @crud.db_session
 def get_buyer_buys(buyer_id: int = fastapi.Path()):
     name = crud.get_buyer_by_id(buyer_id).name
-    return crud.Visitor(name).get_buyer_buys()
+    return crud.Repository(name).get_buyer_buys()
 
 
 @api.post('/hire_seller')
