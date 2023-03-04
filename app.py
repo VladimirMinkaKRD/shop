@@ -1,50 +1,47 @@
 import fastapi
-import pydantic_models
 from Database import crud
 from Database.crud import Repository
 
 api = fastapi.FastAPI()
 
 
-visitor = Repository('Владимир')
-#TODO это служебный класс
-@api.post('/create_buyer')
+@api.post('/user')
 @crud.db_session
-def create_buyer(name: dict = fastapi.Body()):
-    new_name = name['name']
-    return crud.Repository(new_name).create_user()
+def create_user(attributes: dict = fastapi.Body()):
+    name = attributes['name']
+    create_stuff = attributes['create_stuff']
+    return crud.Repository().create_user(name, create_stuff)
 
 
-@api.put('/buyer/{buyer_id}')
+@api.put('/user/{user_id:int}')
 @crud.db_session
-def update_buyer(buyer_id: int = fastapi.Path(), name=fastapi.Body()):
-    crud.update_buyer(buyer_id, name['name'])
+def update_user(user_id: int = fastapi.Path(), create_stuff=fastapi.Body()):
+    crud.update_user(user_id, create_stuff['create_stuff'])
     return True
 
 
-@api.get('/get_info_by_buyer_id/{buyer_id:int}')
+@api.get('/get_info_by_user_id/{user_id:int}')
 @crud.db_session
-def get_info_about_buyer_by_id(buyer_id: int):
-    return crud.get_buyer_info(crud.Buyer[buyer_id])
+def get_info_about_user_by_id(user_id: int):
+    return crud.get_user_info(crud.User[user_id])
 
 
-@api.delete('/buyer/{buyer_id}')
+@api.delete('/user/{user_id}')
 @crud.db_session
-def delete_buyer(buyer_id: int = fastapi.Path()):
-    crud.get_buyer_by_id(buyer_id).delete()
+def delete_user(user_id: int = fastapi.Path()):
+    crud.get_user_by_id(user_id).delete()
     return True
 
 
-@api.post('/create_buy/{buyer_id:int}')
+@api.post('/create_buy/{user_id:int}')
 @crud.db_session
-def create_buy(buyer_id: int = fastapi.Path(), buy: dict = fastapi.Body()):
-    name = crud.get_buyer_by_id(buyer_id).name
-    buying = crud.Repository(name).create_deal(buy)
+def create_buy(user_id: int = fastapi.Path(), buy: dict = fastapi.Body()):
+    id = crud.get_user_by_id(user_id).id
+    buying = crud.Repository().create_deal(id, buy)
     return {
-        'id': buying.id,
         'date_of_order': buying.date_of_order,
         'sum_deal': buying.sum_of_order,
-        'seller': buying.seller.name
+        'seller': buying.seller
     }
 
 
@@ -60,26 +57,16 @@ def get_all_buyers():
     return crud.get_all_buyers()
 
 
-@api.get('/buyer/my_history/{buyer_id:int}')
+@api.get('/user/history/{user_id:int}')
 @crud.db_session
-def get_buyer_buys(buyer_id: int = fastapi.Path()):
-    name = crud.get_buyer_by_id(buyer_id).name
-    return crud.Repository(name).get_buyer_buys()
+def get_buyer_buys(user_id: int = fastapi.Path()):
+    return crud.Repository().get_buyer_buys(user_id)
 
 
-@api.post('/hire_seller')
+@api.put('/stuff/{user_id:int}')
 @crud.db_session
-def create_seller(name: dict = fastapi.Body()):
-    seller_name = name['name']
-    crud.Salesman(seller_name).create_seller()
-    return True
-
-
-@api.put('/update_stuff/{seller_id:int}')
-@crud.db_session
-def update_stuff(seller_id: int = fastapi.Path(), stuff: dict = fastapi.Body()):
-    seller_name = crud.get_seller_by_id(seller_id).name
-    crud.Salesman(seller_name).update_stuff(stuff['stuff'], stuff['amount'], stuff['price'])
+def update_stuff(user_id: int = fastapi.Path(), stuff: dict = fastapi.Body()):
+    crud.Repository().update_stuff(user_id, stuff['stuff'], stuff['amount'], stuff['price'])
     return True
 
 
@@ -89,12 +76,11 @@ def get_info_about_stuff(stuff_id: int = fastapi.Path()):
     return crud.get_good_info_by_id(stuff_id)
 
 
-@api.post('/create_stuff/{seller_id:int}')
+@api.post('/stuff/{user_id:int}')
 @crud.db_session
-def create_stuff(seller_id: int, stuff: dict = fastapi.Body()):
-    seller_name = crud.get_seller_by_id(seller_id).name
-    crud.Salesman(seller_name).create_stuff(stuff['stuff'], stuff['amount'], stuff['price'])
-    return True
+def create_stuff(user_id: int, stuff: dict = fastapi.Body()):
+    stuff = crud.Repository().create_stuff(user_id, stuff['stuff'], stuff['amount'], stuff['price'])
+    return stuff
 
 
 @api.delete('/stuff/{stuff_id:int}')
