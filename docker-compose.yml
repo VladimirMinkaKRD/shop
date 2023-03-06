@@ -1,0 +1,46 @@
+version: '3.6'
+
+services:
+
+  app:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    command: bash -c 'uvicorn app:api --reload --port 8080'
+    depends_on:
+      - mysql
+    volumes:
+      - .:/code
+    networks:
+      - nt_mysql
+
+
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    platform: linux/arm64/v8
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_HOST: localhost
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: user
+
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - app_db:/var/lib/mysql
+    networks:
+      - nt_mysql
+
+
+
+volumes:
+  app_db:
+
+networks:
+  nt_mysql:
+    driver: bridge

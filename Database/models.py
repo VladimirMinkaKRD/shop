@@ -1,14 +1,12 @@
+import json
 from datetime import datetime
-from pony.orm import *
+from pony.orm import Database, PrimaryKey, Required, Optional, Json, Set
+
 
 db = Database()
 
 
-class Good(db.Entity):  # TODO доработать класс User и создать классы наследники Buyer и Seller со своим функционалом
-    id = PrimaryKey(int, auto=True)
-    stuff = Required(str)
-    amount = Optional(int, default=0)
-    price = Optional(float)
+
 
 
 class Buy(db.Entity):
@@ -16,9 +14,14 @@ class Buy(db.Entity):
     date_of_order = Optional(datetime)
     sum_of_order = Required(float)
     buyer = Required(int)
-    seller = Required(int)
-    good = Required(Json)
+    goods = Set("Good")
 
+class Good(db.Entity):  # TODO доработать класс User и создать классы наследники Buyer и Seller со своим функционалом
+    id = PrimaryKey(int, auto=True)
+    stuff = Required(str)
+    amount = Optional(int, default=0)
+    price = Optional(float)
+    orders = Set('Buy')
 
 class User(db.Entity):
     id = PrimaryKey(int, auto=True)
