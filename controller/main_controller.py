@@ -105,8 +105,8 @@ def create_stuff(user_id: int, stuff: dict = fastapi.Body()):
     return stuff
 
 
-@api.delete('/stuff/{stuff_id:int}')
-@crud.db_session
-def delete_stuff(stuff_id: int = fastapi.Path()):
-    crud.get_good_by_id(stuff_id).delete()
-    return True
+# @api.delete('/stuff/{stuff_id:int}')
+# @crud.db_session
+# def delete_stuff(stuff_id: int = fastapi.Path()):
+#     crud.get_good_by_id(stuff_id).delete()
+#     return True

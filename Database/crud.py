@@ -4,7 +4,6 @@ from pony.orm import db_session, select
 
 from Database.models import User, Good, Buy
 
-
 #TODO Реализовать связи многие ко многи и одни ко многим
 
 class Repository:

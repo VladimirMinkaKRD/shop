@@ -3,7 +3,6 @@ from pony.orm import Database, PrimaryKey, Required, Optional, Json, Set
 
 db = Database()
 
-
 class Buy(db.Entity):
     id = PrimaryKey(int, auto=True)
     date_of_order = Optional(datetime)
